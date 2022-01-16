@@ -167,6 +167,7 @@ def main():
         x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
         random.shuffle(x)
         piece_num = 0
+        print("total piece：", x)
         for i in x:
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
@@ -227,6 +228,14 @@ def main():
                     running_loss = 0
                 overall_step += 1
             piece_num += 1
+            # 处理完一部分数据先保存一下
+            #todo
+            print('saving model for piece {}'.format(i + 1))
+            output_dir_piece=output_dir+'piece{}/'.format(epoch + 1)
+            if not os.path.exists(output_dir_piece + 'model_piece{}'.format(i + 1)):
+                os.mkdir(output_dir_piece + 'model_piece{}'.format(i + 1))
+            model_to_save = model.module if hasattr(model, 'module') else model
+            model_to_save.save_pretrained(output_dir_piece + 'model_piece{}'.format(i + 1))
 
         print('saving model for epoch {}'.format(epoch + 1))
         if not os.path.exists(output_dir + 'model_epoch{}'.format(epoch + 1)):
